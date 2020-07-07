@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8">
-		<title>Zoombot</title>
+		<title>Teamsbot</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<style media="screen">
 
@@ -18,7 +18,7 @@
 				width: 100%; height: 100%;
 				background-repeat: no-repeat;
 			    background-size: cover;
-				background-image: url(img/zoombot-smile.jpg);
+				background-image: url(img/Teamsbot-smile.jpg);
 				z-index: 1;
 			}
 
@@ -32,7 +32,7 @@
 	</head>
 	<body>
 		<div id="pics"></div>
-		<button id="btnOnOff">TURN ON ZOOMBOT</button>
+		<button id="btnOnOff">TURN ON Teamsbot</button>
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/artyom.min.js"></script>
@@ -41,10 +41,16 @@
 			$(function() {
 
 					// Yay Artyom!!
-					const zoombot = new Artyom();
+					const Teamsbot = new Artyom();
+
+					// Yay QnAMaker
+					const myName = 'Sid'; // Change this to your name
+					const QnAMakerHost = 'teamsmeetingbotdemo'; // Host name for QnA maker
+					const QnAMakerId = 'ADD_YOUR_ID_HERE'; // Add your QnA maker ID here
+					const QnAMakerKey = 'ADD_YOUR_KEY_HERE'; // Add your QnA maker key here
 
 					// If you prefer a female voice uncomment the next line of things
-					// zoombot.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+					// Teamsbot.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
 
 					// initialize in off state
 					var audioOn = false;
@@ -52,149 +58,90 @@
 					// Add controls for on/off
 					$('#btnOnOff').click(function(){
 						if(audioOn){
-							$(this).text('TURN ON ZOOMBOT');
+							$(this).text('TURN ON Teamsbot');
 							audioOn = false;
 						} else {
-							$(this).text('TURN OFF ZOOMBOT');
+							$(this).text('TURN OFF Teamsbot');
 							audioOn = true;
-							zoombot.say("hi guys. matt here. my video is a little choppy sorry. how is everyone today?");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open3.jpg)');}, 2000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 3000);
+							Teamsbot.say('hi guys. ' + myName + ' here. my video is a little choppy sorry. how is everyone today?');
+							$('#pics').css('background-image', 'url(img/Teamsbot-open1.jpg)');
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-smile.jpg)');}, 1000);
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-open1.jpg)');}, 1400);
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-open3.jpg)');}, 2000);
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-smile.jpg)');}, 3000);
 						}
 					});
 
-					// Hello
-					zoombot.on(['hello', 'good morning']).then((i) => {
+					// This is how you can handle responses without invoking QnA maker
+					Teamsbot.on(['hello', 'good morning']).then((i) => {
 						if(audioOn){
-							zoombot.say("hi guys. matt here. my video is a little choppy sorry. how is everyone today?");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open3.jpg)');}, 2000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 3000);
+							Teamsbot.say("hi guys. " + myName + " here. my video is a little choppy sorry. how is everyone today?");
+							$('#pics').css('background-image', 'url(img/Teamsbot-open1.jpg)');
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-smile.jpg)');}, 1000);
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-open1.jpg)');}, 1400);
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-open3.jpg)');}, 2000);
+							setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-smile.jpg)');}, 3000);
 						}
 					});
 
-					// How are you?
-					zoombot.on(['how are you', 'how is everybody', 'how is everyone']).then((i) => {
-						if(audioOn){
-							zoombot.say("I am doing great thank you for asking");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2000);
+					// Plugging into QnA maker for recognized text
+					Teamsbot.redirectRecognizedTextOutput((recognized,isFinal) => {
+						if(isFinal) {
+							$.ajax({
+							url: 'https://' + QnAMakerHost + '.azurewebsites.net/qnamaker/knowledgebases/' + QnAMakerId + '/generateAnswer',
+							type: 'POST',
+							contentType: 'application/json',
+							dataType: 'json',
+							data: JSON.stringify({
+								'question': recognized
+							}),
+							success: function(data) { 
+								if (data.answers && data.answers.length > 0) {
+									var answer = data.answers[0].answer;
+
+									// Open mouth
+									$('#pics').css('background-image', 'url(img/Teamsbot-open1.jpg)');
+									setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-smile.jpg)');}, 1000);
+									setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-open2.jpg)');}, 1400);
+									
+									// Say stuff
+									Teamsbot.say(answer, {
+										onEnd (){
+        									// Abort the speech recognition when artyom stops talking !
+        									// This prevents any "hello" command from being executed indefinitely
+        									Teamsbot.ArtyomWebkitSpeechRecognition.abort();
+   				 						}
+									});
+
+									// Close mouth
+									setTimeout(function(){$('#pics').css('background-image', 'url(img/Teamsbot-smile.jpg)');}, 2000);
+		
+								}
+								
+						
+							},
+							error: function() { 
+								Teamsbot.say("I'm sorry, i didn't understand what you mean. Maybe you should buy a new microphone ... or add more commands, yeah that would be better.");
+							},
+							beforeSend: setHeader
+        					});
+
+							function setHeader(xhr) {
+        						xhr.setRequestHeader('Authorization', ' EndpointKey ' + QnAMakerKey);
+      						}
 						}
 					});
-
-					// Can you take care of this
-					zoombot.on(['can you take care of this']).then((i) => {
-						if(audioOn){
-							zoombot.say("i don't have the bandwith");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2000);
-						}
-					});
-
-					// What do you think?
-					zoombot.on(['what do you think', 'any ideas']).then((i) => {
-						if(audioOn){
-							zoombot.say("hmmmmmmmmmm, I'm thinking");
-							$('#pics').css('background-image', 'url(img/zoombot-thinking.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-thinking.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 5000);
-							setTimeout(function(){zoombot.say("let's circle back on this");}, 5000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 5000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open2.jpg)');}, 5700);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 6000);
-						}
-					});
-
-					// Did you get that, can you hear me?
-					zoombot.on(['did you get that', 'can you hear me']).then((i) => {
-						if(audioOn){
-							zoombot.say("I'm having trouble hearing you");
-							$('#pics').css('background-image', 'url(img/zoombot-thinking.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-thinking.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 5000);
-						}
-					});
-
-					// Can you take care of this?
-					zoombot.on(['are you ok']).then((i) => {
-						if(audioOn){
-							zoombot.say("I think it is just my internet connection. sorry.");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2000);
-						}
-					});
-
-					// Give a summary
-					zoombot.on(['give us a summary']).then((i) => {
-						if(audioOn){
-							zoombot.say("Could you repeat that please");
-							$('#pics').css('background-image', 'url(img/zoombot-thinking.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open3.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2200);
-						}
-					});
-
-					// Can you send
-					zoombot.on(['can you send']).then((i) => {
-						if(audioOn){
-							zoombot.say("i'll slack. it to you after this call");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open2.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2000);
-						}
-					});
-
-					// Day drinking
-					zoombot.on(['drinking']).then((i) => {
-						if(audioOn){
-							zoombot.say("is it too. early for red wine? ha ha ha ha ha ha ha ha ha.");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 2200);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open2.jpg)');}, 3200);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 4000);
-						}
-					});
-
-					// Bye
-					zoombot.on(['bye', 'goodbye']).then((i) => {
-						if(audioOn){
-							zoombot.say("talk to everybody later. be safe");
-							$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 1000);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-open1.jpg)');}, 1400);
-							setTimeout(function(){$('#pics').css('background-image', 'url(img/zoombot-smile.jpg)');}, 2000);
-						}
-					});
-
 
 					// Kickstart my heart
-					zoombot.initialize({
-					    lang: "en-GB", // GreatBritain english
+					Teamsbot.initialize({
+					    lang: "en-US", // GreatBritain english
 					    continuous: true, // Listen forever
 					    soundex: true,// Use the soundex algorithm to increase accuracy
 					    debug: true, // Show messages in the console
 					    listen: true, // Start to listen commands !
 					    // If provided, you can only trigger a command if you say its name
-					    // e.g to trigger "Hello", you need to say "Zoombot Hello"
-					    //name: "zoombot"
+					    // e.g to trigger "Hello", you need to say "Teamsbot Hello"
+					    //name: "Teamsbot"
 					}).then(() => {
 					    console.log("Artyom has been succesfully initialized");
 					}).catch((err) => {
