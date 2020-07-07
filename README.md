@@ -1,4 +1,10 @@
 # Zoombot
+Most of everything in here is taken from [https://github.com/mcreed/zoombot](https://github.com/mcreed/zoombot "zoombot").
+I rewrote this project without jQuery because if there's anything I hate more than JavaScript, it's jQuery.
+Everything else in this README is preserved from the original.
+
+
+## Zoombot
 A highly advanced AI to handle all those Zoom calls so you can live your life in peace. WARNING: Everything about this project is shitty other than Artyom.js (which was actually coded by someone who knows what they're doing) so I take no responsibility for not preloading the images, not creating a local https server, and using some random old ass version of jQuery. Sorry for the nightmares but hey, this thing actually works so have fun! If you want to learn a little more about Zoombot I wrote this too https://redpepper.land/blog/zoombot/
 
 
